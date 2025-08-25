@@ -1,0 +1,30 @@
+# -----------------
+# Post-Deployment Steps
+# -----------------
+
+## 1. Initialize Terraform
+terraform init
+
+## 2. Deploy the lab environment
+terraform apply -var-file="secrets.tfvars"
+
+## 3. Retrieve Control Node IP
+terraform output control_node_ip
+
+## 4. Retrieve Managed Nodes IPs
+terraform output managed_nodes_ips
+
+## 5. Connect to the Control Node
+ssh -i ansible-lab-key.pem ec2-user@$(terraform output -raw control_node_ip)
+
+## 6. Connect to Managed Nodes directly (optional)
+ssh -i ansible-lab-key.pem ec2-user@$(terraform output -raw managed_nodes_ips[0])
+ssh -i ansible-lab-key.pem ec2-user@$(terraform output -raw managed_nodes_ips[1])
+
+## 7. Verify Ansible Inventory
+On the control node:
+cat /home/ansible/ansible/inventory
+
+## 8. Test Ansible Connection
+On the control node:
+ansible -i /home/ansible/ansible/inventory workers -m ping
