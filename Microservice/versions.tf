@@ -9,14 +9,19 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 
   default_tags {
     tags = {
-      owner = "cfmoreno"
+      owner       = "cfmoreno"
       Environment = "dev"
       Project     = "Microservice"
     }
   }
 }
 
+variable "aws_region" {
+  description = "The AWS region to create resources in."
+  type        = string
+  default     = "us-east-1"
+}
